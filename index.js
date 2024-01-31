@@ -12,14 +12,17 @@ let proximoIDCliente = 1;
 
 app.use(express.json());
 
-
+//envía como respuesta el arreglo autos almacenado en el objeto data con la funcion de devolucion
+// de llamada en este caso imprime todos los objetos de autos.
 app.get('/api/autos', (req, res) => {
   res.json(data.autos);
 });
 
 
 app.get('/api/autos/:id', (req, res) => {
+  //devuelve el parametro id de autos guardandolo en una constante auto y lo convierte a entero
   const auto = data.autos.find(car => car.id === parseInt(req.params.id));
+  //si el auto no existe (es diferente a cualquier id del arreglo) se envia una respuesta de estado 404
   if (!auto) {
     return res.status(404).json({ mensaje: 'Auto no encontrado' });
   }
@@ -60,7 +63,11 @@ app.put('/api/autos/:id', async (req, res) => {
   res.json(data.autos[indice]);
 });
 
-
+/* Verifica si el auto existe, lo elimina del arreglo,
+ guarda los datos actualizados en un archivo y luego 
+ responde con un mensaje indicando que el auto ha sido 
+ eliminado exitosamente. Si el auto no se encuentra, 
+ responde con un código de estado 404*/
 app.delete('/api/autos/:id', async (req, res) => {
   const id = parseInt(req.params.id);
   const autoExistente = data.autos.find(car => car.id === id);
@@ -103,7 +110,6 @@ app.post('/api/clientes', async (req, res) => {
   
   res.json(nuevoCliente);
 });
-//http POST http://localhost:3000/api/clientes nombre="Nuevo Cliente" usuario="nuevousuario" direccion="Nueva Dirección"
 
 
 // Ruta para actualizar un cliente
@@ -147,7 +153,12 @@ async function cargarDatosDesdeArchivo() {
   }
 }
 
-
+/*await fs.writeFile('data.json', JSON.stringify(data, null, 2));
+Utiliza la función writeFile del módulo fs para escribir los datos
+ contenidos en el objeto data en el archivo data.json. JSON.stringify(data, null, 2)
+  convierte el objeto data en una cadena JSON con formato y una sangría de 2 espacios.
+   La palabra clave await se utiliza para esperar a que la operación de escritura del 
+   archivo se complete antes de continuar. */
 async function guardarDatosEnArchivo() {
   try {
     await fs.writeFile('data.json', JSON.stringify(data, null, 2));
@@ -156,7 +167,7 @@ async function guardarDatosEnArchivo() {
   }
 }
 
-
+//dsagbsaf
 cargarDatosDesdeArchivo().then(() => {
   app.listen(PORT, () => {
     console.log(`Servidor iniciado en http://localhost:${PORT}`);
